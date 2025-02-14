@@ -6,3 +6,4 @@ const home = async (req, res) => {
 module.exports = {home}; //exporting the function for use in other files.
 
 
+
