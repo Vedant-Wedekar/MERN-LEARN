@@ -1,19 +1,15 @@
-const mongoose = require('mongoose');   
+const mongoose = require('mongoose');    
 
+const URI = process.env.mongo;
 
-const URI = "mongodb://127.0.0.1:27017/mern_admin"
-// mongoose.connect(URI);
-
-
-const connectDB = async () =>{
- 
-    try{
+const connectDB = async () => {
+    try {
         await mongoose.connect(URI);
-           console.log("Connecting to the database");
-    }catch(error){
-        console.log("Error connecting to the database");
-        process.exit(0);
+        console.log("✅ Connected to the database successfully!");
+    } catch (error) {
+        console.error("❌ Error connecting to the database:", error.message);
+        process.exit(1);
     }
+};
 
-}
 module.exports = connectDB;
