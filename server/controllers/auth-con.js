@@ -1,10 +1,23 @@
+const User = require("../models/user-models");
+
 const home = async (req, res) => {
     try { res.status(200).send('this is page throught the router ');}
     catch (error) { console.error(error); }
 }
 
 const profile = async (req, res) => {
-    try {console.log(req.body); 
+   
+    try { res.status(200).send('this is page throught the profile ');
+        const {user,email,phone , password } = req.body
+
+        const userExist = await User.findOne({email: email})
+        if(userExist){
+            return res.status(400).json({message: "User already exist"})
+        }
+        await User.create({username: user, email: email, phone: phone, password: password})
+
+
+
          res.status(200).json({message:req.body});
         }
     catch (error) { console.error(error); }
