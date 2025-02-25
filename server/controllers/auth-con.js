@@ -1,29 +1,46 @@
 const User = require("../models/user-models");
+const bcrypt = require("bcryptjs");
 
 const home = async (req, res) => {
-    try { res.status(200).send('this is page throught the router ');}
-    catch (error) { console.error(error); }
-}
+    try { 
+        res.status(200).send('This is page through the router');
+    } catch (error) { 
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" }); 
+    }
+};
 
 const profile = async (req, res) => {
-   
-    try { res.status(200).send('this is page throught the profile ');
-        const {username,email,phone , password } = req.body
+    try { 
+        const { username, email, phone, password } = req.body;
 
-        const userExist = await User.findOne({email: email})
-        if(userExist){
-            return res.status(400).json({message: "User already exist"})
+        // Check if user already exists
+        const userExist = await User.findOne({ email: email });
+        if (userExist) {
+            return res.status(400).json({ message: "User already exists" });
         }
-        await User.create({username: username, email: email, phone: phone, password: password})
 
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(password, salt);
 
+        // Create user
+        const newUser = await User.create({
+            username,
+            email,
+            phone,
+            password: hashPassword
+        });
+        
 
-         res.status(200).json({message:req.body});
-        }
-    catch (error) { console.error(error); }
-}
-//this function is mapped to the home route in auth.js file. It responds with a status 200 and a message when accessed through the route '/profile'.
-module.exports = {home,profile}; //exporting the function for use in other files.
+        // Send response after user creation
+        return res.status(201).json({ message: "User created successfully", user: newUser });
 
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
 
-
+// Exporting functions
+module.exports = { home, profile };
