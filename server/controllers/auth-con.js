@@ -34,7 +34,7 @@ const profile = async (req, res) => {
         
 
         // Send response after user creation
-        return res.status(201).json({ message: "User created successfully", user: newUser });
+         res.status(201).json({ message: "User created successfully", user: newUser });
 
     } catch (error) {
         console.error(error);
